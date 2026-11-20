@@ -192,7 +192,7 @@ CREATE TABLE baggage_event (
 -- Decision support and manual override -------------------------------------------------
 CREATE TABLE recommendation (
   recommendation_id  TEXT PRIMARY KEY,
-  type               TEXT NOT NULL CHECK (type IN ('REROUTE','CREW_REPLACEMENT')),
+  type               TEXT NOT NULL CHECK (type IN ('REROUTE','CREW_REPLACEMENT','GATE_REASSIGNMENT')),
   flight_id          TEXT NOT NULL REFERENCES flight(flight_id),
   details            TEXT NOT NULL,
   status             TEXT NOT NULL CHECK (status IN ('OPEN','ACCEPTED','REJECTED')),
