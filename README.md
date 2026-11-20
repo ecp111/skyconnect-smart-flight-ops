@@ -10,7 +10,7 @@ A working prototype of the **SkyConnect Airlines Smart Flight Operations Managem
 
 ## Run it
 
-You need [Node.js](https://nodejs.org) 20 or newer.
+You need [Node.js](https://nodejs.org) **22.13 or newer** (the current LTS works). Nothing needs compiling: the database uses Node's built-in SQLite.
 
 ```bash
 git clone https://github.com/ecp111/skyconnect-smart-flight-ops.git
@@ -67,7 +67,7 @@ To keep the prototype a one-command install, a few production pieces are replace
 | In the report | In this prototype |
 |---|---|
 | Amazon EventBridge | In-process event bus with a transactional outbox and idempotent consumers |
-| Amazon RDS (PostgreSQL) | SQLite with the same tables, keys, CHECK rules and ACID transactions |
+| Amazon RDS (PostgreSQL) | Node's built-in SQLite with the same tables, keys, CHECK rules and ACID transactions |
 | AWS containers, one per service | One Node.js process; each service is its own module and only talks to others through the bus |
 | Data warehouse | Analytics snapshot refreshed every 30 s, plus a live view for controllers |
 | Miami hub edge server | Separate edge tables and a local copy of the Part 117 rules; you can switch it offline |

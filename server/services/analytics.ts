@@ -18,7 +18,7 @@ export class AnalyticsService {
 
   private compute() {
     const { db } = this.ctx;
-    const one = (sql: string, ...a: unknown[]) => db.prepare(sql).get(...a) as any;
+    const one = (sql: string, ...a: any[]) => db.prepare(sql).get(...a) as any;
 
     // AR-01 on-time performance: arrived within 15 minutes of schedule
     const arrived = db.prepare(`SELECT scheduled_arrival, actual_arrival FROM flight WHERE status = 'ARRIVED'`).all() as any[];

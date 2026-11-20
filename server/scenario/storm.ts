@@ -38,8 +38,8 @@ export class StormScenario {
 
   private async play() {
     const { db, bus, adapters, flightOps, override, edge, rebooking, sims, analytics } = this.sys;
-    const q = (sql: string, ...a: unknown[]) => db.prepare(sql).get(...a) as any;
-    const all = (sql: string, ...a: unknown[]) => db.prepare(sql).all(...a) as any[];
+    const q = (sql: string, ...a: any[]) => db.prepare(sql).get(...a) as any;
+    const all = (sql: string, ...a: any[]) => db.prepare(sql).all(...a) as any[];
 
     // 1. Detect ---------------------------------------------------------------------------
     adapters.weather.ingest({ severity: "SEVERE", description: "Severe thunderstorms with lightning over MIA; ramp operations suspended",

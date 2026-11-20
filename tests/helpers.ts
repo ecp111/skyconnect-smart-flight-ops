@@ -12,5 +12,5 @@ export async function delaySc1042(sys: ReturnType<typeof makeSystem>, minutes = 
   await sys.bus.drain();
 }
 
-export const count = (sys: ReturnType<typeof makeSystem>, sql: string, ...args: unknown[]) =>
+export const count = (sys: ReturnType<typeof makeSystem>, sql: string, ...args: any[]) =>
   (sys.db.prepare(sql).get(...args) as { n: number }).n;
