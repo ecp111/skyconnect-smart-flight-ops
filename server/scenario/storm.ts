@@ -123,7 +123,7 @@ export class StormScenario {
     const others = ["p-003", "p-005", "p-007"];
     for (const [i, pid] of others.entries())
       await rebooking.request({ passengerId: pid, newFlightId: i === 0 ? "f-sc1046" : "f-sc1050", actor: pid });
-    const before = rebooking.get(mariaReq.request_id);
+    const before = mariaReq; // status right after the timeout, before any reconciliation
     sims.acars.up = false;
     await rebooking.reconcileAll();
     sims.sabre.mode = "normal";
@@ -131,7 +131,7 @@ export class StormScenario {
     const after = rebooking.get(mariaReq.request_id);
     const confirmed = q(`SELECT COUNT(*) n FROM rebooking WHERE status = 'CONFIRMED'`).n;
     this.push("How failed integrations are handled", "Sabre times out; the system checks before retrying", [
-      `Sabre slowed under the rebooking surge and Maria's request timed out. It stayed ${before.status}; she was not told she was booked and nothing was resent.`,
+      `Sabre slowed under the rebooking surge and Maria's request timed out (${before.last_error}). It stayed ${before.status}; she was not told she was booked and nothing was resent.`,
       `The adapter looked up the booking in Sabre by its correlation ID and found it: now ${after.status} (${after.sabre_booking_ref}).`,
       `Sabre holds ${sims.sabre.bookingCount()} bookings for ${confirmed} confirmed requests, so no one was double-booked (PP-02, SI-01).`,
       "The ACARS feed dropped too; the dashboard now shows last known status with a stale-data warning.",

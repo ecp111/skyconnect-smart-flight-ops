@@ -109,7 +109,13 @@ export class CrewSchedulingService {
           details: { flightId: p.flightId, crewId: p.crewId, rule: res.violations[0].rule, message: res.violations[0].message, checkId } });
         return { assignmentId, status, compliance: res };
       }
-      if (p.replaceAssignmentId) this.remove(p.replaceAssignmentId, p.actor, "REPLACED", false);
+      if (p.replaceAssignmentId) {
+        this.remove(p.replaceAssignmentId, p.actor, "REPLACED", false);
+        // close the matching replacement recommendation so the override console stays accurate
+        db.prepare(`UPDATE recommendation SET status = 'ACCEPTED', decided_by = ?, decided_at = ?, decision_reason = COALESCE(decision_reason, ?)
+          WHERE type = 'CREW_REPLACEMENT' AND status = 'OPEN' AND json_extract(details, '$.assignmentId') = ?`)
+          .run(p.actor, this.ctx.now(), `Replaced by ${p.crewId}`, p.replaceAssignmentId);
+      }
       bus.record({ entity_type: "CREW_ASSIGNMENT", entity_id: assignmentId, event_type: status === "CONFIRMED" ? "CREW_ASSIGNED" : "CREW_ASSIGNED_PROVISIONAL",
         source: p.source === "EDGE" ? "EDGE_NODE" : "CREW_SCHEDULING",
         details: { flightId: p.flightId, flightNumber: flight.flight_number, crewId: p.crewId, role: p.role, replaced: p.replaceAssignmentId ?? null, checkId } });
